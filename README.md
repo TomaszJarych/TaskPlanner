@@ -1,1 +1,1 @@
-# TaskPlanner
+# TaskPlanner by Tomasz Jarych
