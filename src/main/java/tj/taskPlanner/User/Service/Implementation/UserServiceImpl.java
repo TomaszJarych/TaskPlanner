@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +30,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserDto getById(Long id) {
+	public UserDto getById(Long id) throws EntityNotFoundException {
 		return converter.toUserDto(userRepository.getOne(id));
 	}
 
@@ -55,6 +58,21 @@ public class UserServiceImpl implements UserService {
 	private List<UserDto> toUserDtoList(List<User> list) {
 		return list.stream().filter(Objects::nonNull).map(converter::toUserDto)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public UserDto login(UserDto dto) throws EntityNotFoundException {
+		if (dto.getLogin() == null || dto.getLogin() == "") {
+			return null;
+		}
+		User user = userRepository.getUserByLogin(dto.getLogin());
+		if (Objects.isNull(user)) {
+			return null;
+		}
+		if (BCrypt.checkpw(dto.getPassword(), user.getPassword())) {
+			return converter.toUserDto(user);
+		}
+		return null;
 	}
 
 }

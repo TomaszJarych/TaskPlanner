@@ -17,25 +17,22 @@ import tj.taskPlanner.Commons.Enum.UserRole;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="app_user")
+@Table(name = "app_user")
 public class User {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	private String login;
-	
+
 	private String name;
-	
+
 	private String email;
-	
+
 	private String password;
-	
+
 	@Enumerated(EnumType.STRING)
 	private UserRole userRole;
-	
-	
-	
 
 }

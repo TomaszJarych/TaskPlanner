@@ -55,7 +55,6 @@ public class ConverterTest {
 		expected.setUserRole(userRole);
 
 		// when
-
 		UserDto actual = converter.toUserDto(user);
 
 		// then
@@ -104,12 +103,12 @@ public class ConverterTest {
 		Mockito.when(userRepository.getOne(id)).thenReturn(userStub);
 
 		// when
-
 		User actual = converter.toUserEntity(givenUserDto);
-		
-//		REFLEKSJA!
-//		 Method method = ReflectionUtils.findMethod(GameServiceImpl.class, "toDto", Game.class);
-//         method.setAccessible(true);
+
+		// REFLEKSJA!
+		// Method method = ReflectionUtils.findMethod(GameServiceImpl.class,
+		// "toDto", Game.class);
+		// method.setAccessible(true);
 
 		// then
 		assertNotNull(actual);

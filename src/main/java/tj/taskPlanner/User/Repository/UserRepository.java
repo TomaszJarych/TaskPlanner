@@ -8,4 +8,6 @@ import tj.taskPlanner.User.domain.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+	User getUserByLogin(String login);
+
 }
