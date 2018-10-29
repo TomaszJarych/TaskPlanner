@@ -1,17 +1,18 @@
 package tj.taskPlanner.User.dto;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import tj.taskPlanner.Commons.Enum.UserRole;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserDto {
+@ToString
+public class UserDto implements Serializable{
 	
 	private Long id;
 	
