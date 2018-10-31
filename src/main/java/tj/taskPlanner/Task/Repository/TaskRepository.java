@@ -1,5 +1,6 @@
 package tj.taskPlanner.Task.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,7 @@ import tj.taskPlanner.Task.domain.Task;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
 	List<Task> getAllTaskByOwnerIdOrderByCreatedDesc(Long id);
+	
+	List<Task> getAllTaskByRealizationIsBetweenAndOwnerId(LocalDateTime first, LocalDateTime second, Long id);
 
 }

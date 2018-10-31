@@ -255,7 +255,7 @@ public class ConverterTest {
 		expected.setStatus(status);
 		
 		
-		Mockito.when(userRepository.getOne(id)).thenReturn(userOwnerStub);
+		Mockito.when(userRepository.getOne(userId)).thenReturn(userOwnerStub);
 		
 		//when
 		Task actual = converter.toTaskEntity(dto);

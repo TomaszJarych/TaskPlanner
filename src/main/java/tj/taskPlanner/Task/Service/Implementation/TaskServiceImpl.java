@@ -1,5 +1,6 @@
 package tj.taskPlanner.Task.Service.Implementation;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -58,6 +59,15 @@ public class TaskServiceImpl implements TaskService {
 	public List<TaskDto> getAllTaskByOwnerIdOrderByCreatedDesc(Long id) {
 		return toTaskDtoList(
 				taskRepository.getAllTaskByOwnerIdOrderByCreatedDesc(id));
+	}
+
+	@Override
+	public List<TaskDto> getAllTaskByRealizationIsBetweenNowAndOtherDateAndOwnerId(
+			LocalDateTime second, Long id) {
+
+		return toTaskDtoList(
+				taskRepository.getAllTaskByRealizationIsBetweenAndOwnerId(
+						LocalDateTime.now(), second, id));
 	}
 
 	private List<TaskDto> toTaskDtoList(List<Task> list) {

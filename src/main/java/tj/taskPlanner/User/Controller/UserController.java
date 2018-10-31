@@ -37,7 +37,6 @@ public class UserController {
 
 	@GetMapping(path = "/all", produces = APPLICATION_JSON_UTF8_VALUE)
 	public Result getallUsers() {
-		System.out.println(Result.ok(userService.getAllFromDB()));
 		return Result.ok(userService.getAllFromDB());
 	}
 

@@ -72,7 +72,7 @@ public class DomainConverter {
 		dto.setStatus(task.getStatus());
 		dto.setCreated(task.getCreated());
 		dto.setRealization(task.getRealization());
-		dto.setOwner(toUserDto(task.getOwner()));
+			dto.setOwner(toUserDto(task.getOwner()));
 
 		return dto;
 
@@ -93,7 +93,7 @@ public class DomainConverter {
 		task.setPriority(dto.getPriority());
 		task.setStatus(dto.getStatus());
 		task.setRealization(dto.getRealization());
-		task.setOwner(userRepository.getOne(dto.getId()));
+		task.setOwner(userRepository.getOne(dto.getOwner().getId()));
 
 		return task;
 	}

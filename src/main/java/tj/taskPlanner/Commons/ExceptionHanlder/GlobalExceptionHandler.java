@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import tj.taskPlanner.Commons.ResultWrapper.Result;
 
-@ControllerAdvice(annotations = RestController.class)
+@ControllerAdvice(basePackages= {"tj.taskPlanner"})
 @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
