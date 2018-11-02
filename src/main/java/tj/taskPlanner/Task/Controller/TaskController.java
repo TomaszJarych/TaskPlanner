@@ -1,5 +1,12 @@
 package tj.taskPlanner.Task.Controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+
+import java.time.LocalDateTime;
+
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,15 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
-
-import java.time.LocalDateTime;
-
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
-
-import tj.taskPlanner.Commons.Enum.Priority;
-import tj.taskPlanner.Commons.Enum.TaskStatus;
 import tj.taskPlanner.Commons.Enum.UserRole;
 import tj.taskPlanner.Commons.ResultWrapper.Result;
 import tj.taskPlanner.Task.Service.TaskService;

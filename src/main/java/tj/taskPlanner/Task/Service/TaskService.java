@@ -10,6 +10,7 @@ public interface TaskService extends GenericCrudService<TaskDto, Long> {
 
 	List<TaskDto> getAllTaskByOwnerIdOrderByCreatedDesc(Long id);
 
-	List<TaskDto> getAllTaskByRealizationIsBetweenNowAndOtherDateAndOwnerId(LocalDateTime second, Long id);
+	List<TaskDto> getAllTaskByRealizationIsBetweenNowAndOtherDateAndOwnerId(
+			LocalDateTime second, Long id);
 
 }

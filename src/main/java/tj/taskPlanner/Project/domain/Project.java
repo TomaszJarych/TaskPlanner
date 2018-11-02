@@ -27,11 +27,11 @@ import tj.taskPlanner.User.domain.User;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name="projects")
+@Table(name = "projects")
 public class Project {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	private String name;
@@ -40,10 +40,10 @@ public class Project {
 
 	private LocalDateTime creation;
 
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<User> team = new HashSet();
 
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER)
 	private Set<Task> tasks = new HashSet();
 
 }

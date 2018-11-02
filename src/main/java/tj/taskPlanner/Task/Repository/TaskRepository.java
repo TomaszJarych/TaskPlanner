@@ -12,7 +12,8 @@ import tj.taskPlanner.Task.domain.Task;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
 	List<Task> getAllTaskByOwnerIdOrderByCreatedDesc(Long id);
-	
-	List<Task> getAllTaskByRealizationIsBetweenAndOwnerId(LocalDateTime first, LocalDateTime second, Long id);
+
+	List<Task> getAllTaskByRealizationIsBetweenAndOwnerId(LocalDateTime first,
+			LocalDateTime second, Long id);
 
 }
