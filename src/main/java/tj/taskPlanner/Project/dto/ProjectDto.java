@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import tj.taskPlanner.Task.dto.TaskDto;
 import tj.taskPlanner.User.dto.UserDto;
 
@@ -15,6 +16,7 @@ import tj.taskPlanner.User.dto.UserDto;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ProjectDto {
 
 	private Long id;

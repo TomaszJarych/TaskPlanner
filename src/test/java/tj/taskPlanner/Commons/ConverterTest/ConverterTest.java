@@ -460,4 +460,227 @@ public class ConverterTest {
 		}
 	}
 
+	@Test
+	public void testConverterProjectToEntity() {
+		// given
+		AtomicLong projectEntityId = new AtomicLong(1);
+		AtomicLong projectDtoId = new AtomicLong(1);
+		String projectName = "TestProjectName";
+		String projectDescription = "TestProjectDescription";
+		LocalDateTime projectCommonCreationTime = LocalDateTime.now();
+
+		AtomicLong userEntityId = new AtomicLong(1);
+		AtomicLong userDtoId = new AtomicLong(1);
+		String userLogin = "testLogin";
+		String userName = "testName";
+		String userEmail = "testEmail@test.pl";
+		UserRole userRole = UserRole.ADMIN;
+
+		AtomicLong taskEntityId = new AtomicLong(1);
+		AtomicLong taskDtoId = new AtomicLong(1);
+		LocalDateTime testCreatedDate = LocalDateTime.now();
+		String taskName = "testTaskName";
+		String taskDescription = "testTaskDescription";
+		Priority taskPriority = Priority.NEW;
+		LocalDateTime taskCreated = testCreatedDate;
+		LocalDateTime taskRealization = testCreatedDate.plusDays(2L);
+		TaskStatus taskStatus = TaskStatus.NEW;
+
+		User user1 = new User();
+		user1.setId(userEntityId.getAndIncrement());
+		user1.setName(userName);
+		user1.setLogin(userLogin);
+		user1.setUserRole(userRole);
+		user1.setEmail(userEmail);
+
+		User userStub = new User();
+		userStub.setId(userEntityId.getAndIncrement());
+		userStub.setName(userName);
+		userStub.setLogin(userLogin);
+		userStub.setUserRole(userRole);
+		userStub.setEmail(userEmail);
+
+		UserDto dto1 = new UserDto();
+		dto1.setId(userDtoId.getAndIncrement());
+		dto1.setName(userName);
+		dto1.setLogin(userLogin);
+		dto1.setUserRole(userRole);
+		dto1.setEmail(userEmail);
+
+		Task taskStub = new Task();
+		taskStub.setId(taskEntityId.get());
+		taskStub.setDescription(taskDescription);
+		taskStub.setName(taskName);
+		taskStub.setCreated(taskCreated);
+		taskStub.setPriority(taskPriority);
+		taskStub.setRealization(taskRealization);
+		taskStub.setStatus(taskStatus);
+		taskStub.setOwner(user1);
+
+		Task task1 = new Task();
+		task1.setId(taskEntityId.getAndIncrement());
+		task1.setDescription(taskDescription);
+		task1.setName(taskName);
+		task1.setCreated(taskCreated);
+		task1.setPriority(taskPriority);
+		task1.setRealization(taskRealization);
+		task1.setStatus(taskStatus);
+		task1.setOwner(user1);
+
+		TaskDto taskDto1 = new TaskDto();
+		taskDto1.setId(taskDtoId.getAndIncrement());
+		taskDto1.setDescription(taskDescription);
+		taskDto1.setName(taskName);
+		taskDto1.setCreated(taskCreated);
+		taskDto1.setPriority(taskPriority);
+		taskDto1.setRealization(taskRealization);
+		taskDto1.setStatus(taskStatus);
+		taskDto1.setOwner(dto1);
+
+		Set<User> projectUsers = new HashSet<>();
+		projectUsers.add(user1);
+
+		Set<Task> projectTasks = new HashSet<>();
+		projectTasks.add(task1);
+
+		Set<UserDto> dtoProjectsUsers = new HashSet<>();
+		dtoProjectsUsers.add(dto1);
+
+		Set<TaskDto> dtoProjectsTasks = new HashSet<>();
+		dtoProjectsTasks.add(taskDto1);
+
+		Project projectStub = new Project();
+		projectStub.setId(projectEntityId.get());
+		projectStub.setName(projectName);
+		projectStub.setDescription(projectDescription);
+		projectStub.setCreation(projectCommonCreationTime);
+		projectStub.setTeam(projectUsers);
+		projectStub.setTasks(projectTasks);
+
+		Project expected = new Project();
+		expected.setId(projectEntityId.getAndIncrement());
+		expected.setName(projectName);
+		expected.setDescription(projectDescription);
+		expected.setCreation(projectCommonCreationTime);
+		expected.setTeam(projectUsers);
+		expected.setTasks(projectTasks);
+
+		ProjectDto inputProject = new ProjectDto();
+		inputProject.setId(projectDtoId.getAndIncrement());
+		inputProject.setName(projectName);
+		inputProject.setDescription(projectDescription);
+		inputProject.setCreation(projectCommonCreationTime);
+		inputProject.setTeam(dtoProjectsUsers);
+		inputProject.setTasks(dtoProjectsTasks);
+
+		Mockito.when(projectRepository.getOne(1L)).thenReturn(projectStub);
+		Mockito.when(userRepository.getOne(1L)).thenReturn(userStub);
+		Mockito.when(taskRepository.getOne(1L)).thenReturn(taskStub);
+
+		// when
+		Project actual = converter.toProjectEntity(inputProject);
+
+		// then
+		assertNotNull(actual);
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getDescription(), actual.getDescription());
+		assertEquals(expected.getCreation(), actual.getCreation());
+
+		assertNotNull(actual.getTeam());
+		assertEquals(expected.getTeam().size(), actual.getTeam().size());
+
+		User[] expectedUsersArray = expected.getTeam()
+				.toArray(new User[expected.getTeam().size()]);
+		User[] actualUsersArray = actual.getTeam()
+				.toArray(new User[actual.getTeam().size()]);
+		for (int i = 0; i < actualUsersArray.length; i++) {
+			assertEquals(expectedUsersArray[i].getId(),
+					actualUsersArray[i].getId());
+			assertEquals(expectedUsersArray[i].getName(),
+					actualUsersArray[i].getName());
+			assertEquals(expectedUsersArray[i].getLogin(),
+					actualUsersArray[i].getLogin());
+			assertEquals(expectedUsersArray[i].getUserRole(),
+					actualUsersArray[i].getUserRole());
+			assertEquals(expectedUsersArray[i].getEmail(),
+					actualUsersArray[i].getEmail());
+		}
+
+		assertEquals(expected.getTasks().size(), actual.getTasks().size());
+
+		Task[] expectedTaskArray = expected.getTasks()
+				.toArray(new Task[expected.getTasks().size()]);
+		Task[] actualTaskArray = actual.getTasks()
+				.toArray(new Task[actual.getTasks().size()]);
+
+		for (int i = 0; i < actualTaskArray.length; i++) {
+			assertEquals(expectedTaskArray[i].getId(),
+					actualTaskArray[i].getId());
+			assertEquals(expectedTaskArray[i].getName(),
+					actualTaskArray[i].getName());
+			assertEquals(expectedTaskArray[i].getCreated(),
+					actualTaskArray[i].getCreated());
+			assertEquals(expectedTaskArray[i].getDescription(),
+					actualTaskArray[i].getDescription());
+			assertEquals(expectedTaskArray[i].getRealization(),
+					actualTaskArray[i].getRealization());
+			assertEquals(expectedTaskArray[i].getPriority(),
+					actualTaskArray[i].getPriority());
+			assertEquals(expectedTaskArray[i].getStatus(),
+					actualTaskArray[i].getStatus());
+			assertEquals(expectedTaskArray[i].getOwner().getId(),
+					actualTaskArray[i].getOwner().getId());
+			assertEquals(expectedTaskArray[i].getOwner().getName(),
+					actualTaskArray[i].getOwner().getName());
+			assertEquals(expectedTaskArray[i].getOwner().getLogin(),
+					actualTaskArray[i].getOwner().getLogin());
+			assertEquals(expectedTaskArray[i].getOwner().getEmail(),
+					actualTaskArray[i].getOwner().getEmail());
+			assertEquals(expectedTaskArray[i].getOwner().getUserRole(),
+					actualTaskArray[i].getOwner().getUserRole());
+
+		}
+
+	}
+
+	@Test
+	public void testConverterProjectToEntityNulls() {
+		// given
+		String projectName = "TestProjectName";
+		String projectDescription = "TestProjectDescription";
+		LocalDateTime projectCommonCreationTime = LocalDateTime.now();
+
+		Project projectStub = new Project();
+		projectStub.setName(projectName);
+		projectStub.setDescription(projectDescription);
+		projectStub.setCreation(projectCommonCreationTime);
+
+		Project expected = new Project();
+		expected.setName(projectName);
+		expected.setDescription(projectDescription);
+		expected.setCreation(projectCommonCreationTime);
+
+		ProjectDto inputProject = new ProjectDto();
+		inputProject.setName(projectName);
+		inputProject.setDescription(projectDescription);
+		inputProject.setCreation(projectCommonCreationTime);
+
+		// when
+		Project actual = converter.toProjectEntity(inputProject);
+
+		// then
+		assertNotNull(actual);
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getName(), actual.getName());
+		assertEquals(expected.getDescription(), actual.getDescription());
+		assertEquals(expected.getCreation(), actual.getCreation());
+
+		assertNotNull(actual.getTeam());
+		assertEquals(expected.getTeam().size(), actual.getTeam().size());
+
+		assertEquals(expected.getTasks().size(), actual.getTasks().size());
+
+	}
+
 }

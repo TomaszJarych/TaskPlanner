@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.apache.maven.project.ProjectSorter;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -129,6 +130,34 @@ public class DomainConverter {
 		}
 
 		return dto;
+	}
+
+	public Project toProjectEntity(ProjectDto dto) {
+		Project project;
+
+		if (dto.getId() != null) {
+			project = projectRepository.getOne(dto.getId());
+
+		} else {
+			project = new Project();
+		}
+
+		project.setName(dto.getName());
+		project.setDescription(dto.getDescription());
+		project.setCreation(dto.getCreation());
+
+		if (Objects.nonNull(dto.getTeam()) && !dto.getTeam().isEmpty()) {
+			project.setTeam(dto.getTeam().stream().filter(Objects::nonNull)
+					.map(this::toUserEntity).collect(Collectors.toSet()));
+		}
+
+		if (Objects.nonNull(dto.getTasks()) && !dto.getTasks().isEmpty()) {
+			project.setTasks(dto.getTasks().stream().filter(Objects::nonNull)
+					.map(this::toTaskEntity).collect(Collectors.toSet()));
+
+		}
+
+		return project;
 	}
 
 }
