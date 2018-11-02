@@ -1,7 +1,7 @@
 package tj.taskPlanner.Commons.DtoAndEntityConverter;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -9,6 +9,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import tj.taskPlanner.Project.Repository.ProjectRepository;
 import tj.taskPlanner.Project.domain.Project;
 import tj.taskPlanner.Project.dto.ProjectDto;
 import tj.taskPlanner.Task.Repository.TaskRepository;
@@ -23,12 +24,15 @@ public class DomainConverter {
 
 	private final UserRepository userRepository;
 	private final TaskRepository taskRepository;
+	private final ProjectRepository projectRepository;
 
 	@Autowired
 	public DomainConverter(UserRepository userRepository,
-			TaskRepository taskRepository) {
+			TaskRepository taskRepository,
+			ProjectRepository projectRepository) {
 		this.userRepository = userRepository;
 		this.taskRepository = taskRepository;
+		this.projectRepository = projectRepository;
 	}
 
 	public UserDto toUserDto(User user) {
@@ -75,7 +79,7 @@ public class DomainConverter {
 		dto.setStatus(task.getStatus());
 		dto.setCreated(task.getCreated());
 		dto.setRealization(task.getRealization());
-			dto.setOwner(toUserDto(task.getOwner()));
+		dto.setOwner(toUserDto(task.getOwner()));
 
 		return dto;
 
@@ -100,11 +104,31 @@ public class DomainConverter {
 
 		return task;
 	}
-	
-	
+
 	public ProjectDto toProjectDto(Project project) {
-		
-		return null;
+		ProjectDto dto = new ProjectDto();
+
+		dto.setId(project.getId());
+		dto.setName(project.getName());
+		dto.setDescription(project.getDescription());
+		dto.setCreation(project.getCreation());
+
+		if (Objects.nonNull(project.getTeam())
+				&& !project.getTeam().isEmpty()) {
+			dto.getTeam().clear();
+			dto.setTeam(project.getTeam().stream().filter(Objects::nonNull)
+					.map(this::toUserDto).collect(Collectors.toSet()));
+		}
+
+		if (Objects.nonNull(project.getTasks())
+				&& !project.getTasks().isEmpty()) {
+			dto.getTasks().clear();
+			dto.setTasks(project.getTasks().stream().filter(Objects::nonNull)
+					.map(this::toTaskDto).collect(Collectors.toSet()));
+
+		}
+
+		return dto;
 	}
 
 }

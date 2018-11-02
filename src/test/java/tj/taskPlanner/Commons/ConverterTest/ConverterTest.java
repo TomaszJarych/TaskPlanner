@@ -21,6 +21,7 @@ import tj.taskPlanner.Commons.DtoAndEntityConverter.DomainConverter;
 import tj.taskPlanner.Commons.Enum.Priority;
 import tj.taskPlanner.Commons.Enum.TaskStatus;
 import tj.taskPlanner.Commons.Enum.UserRole;
+import tj.taskPlanner.Project.Repository.ProjectRepository;
 import tj.taskPlanner.Project.domain.Project;
 import tj.taskPlanner.Project.dto.ProjectDto;
 import tj.taskPlanner.Task.Repository.TaskRepository;
@@ -34,17 +35,28 @@ import tj.taskPlanner.User.dto.UserDto;
 public class ConverterTest {
 
 	private DomainConverter converter;
+	private AtomicLong projectId;
+	private AtomicLong userId;
+	private AtomicLong taskId;
 
 	@Mock
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	@Mock
-	TaskRepository taskRepository;
+	private TaskRepository taskRepository;
+
+	@Mock
+	private ProjectRepository projectRepository;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		converter = new DomainConverter(userRepository, taskRepository);
+		converter = new DomainConverter(userRepository, taskRepository,
+				projectRepository);
+		projectId = new AtomicLong(1);
+		userId = new AtomicLong(1);
+		taskId = new AtomicLong(1);
+
 	}
 
 	@Test
@@ -289,19 +301,16 @@ public class ConverterTest {
 	@Test
 	public void converterToProjectsDtoTest() {
 		// given
-		AtomicLong projectId = new AtomicLong(1);
 		String projectName = "TestProjectName";
 		String projectDescription = "TestProjectDescription";
 		LocalDateTime projectCommonCreationTime = LocalDateTime.now();
 
-		AtomicLong userId = new AtomicLong(1);
 		String userLogin = "testLogin";
 		String userName = "testName";
 		String userEmail = "testEmail@test.pl";
 		UserRole userRole = UserRole.ADMIN;
 
 		LocalDateTime testCreatedDate = LocalDateTime.now();
-		AtomicLong taskId = new AtomicLong(1);
 		String taskName = "testTaskName";
 		String taskDescription = "testTaskDescription";
 		Priority taskPriority = Priority.NEW;
@@ -316,7 +325,7 @@ public class ConverterTest {
 		user1.setUserRole(userRole);
 
 		UserDto dto1 = new UserDto();
-		dto1.setId(userId.getAndIncrement());
+		dto1.setId(userId.get());
 		dto1.setName(userName);
 		dto1.setLogin(userLogin);
 		dto1.setUserRole(userRole);
@@ -328,7 +337,7 @@ public class ConverterTest {
 		user2.setUserRole(userRole);
 
 		UserDto dto2 = new UserDto();
-		dto2.setId(userId.getAndIncrement());
+		dto2.setId(userId.get());
 		dto2.setName(userName);
 		dto2.setLogin(userLogin);
 		dto2.setUserRole(userRole);
@@ -398,8 +407,10 @@ public class ConverterTest {
 		assertNotNull(actual.getTeam());
 		assertEquals(expected.getTeam().size(), actual.getTeam().size());
 
-		UserDto[] expectedUsersArray = (UserDto[]) expected.getTeam().toArray();
-		UserDto[] actualUsersArray = (UserDto[]) actual.getTeam().toArray();
+		UserDto[] expectedUsersArray = expected.getTeam()
+				.toArray(new UserDto[expected.getTeam().size()]);
+		UserDto[] actualUsersArray = actual.getTeam()
+				.toArray(new UserDto[actual.getTeam().size()]);
 		for (int i = 0; i < actualUsersArray.length; i++) {
 			assertEquals(expectedUsersArray[i].getId(),
 					actualUsersArray[i].getId());
@@ -414,9 +425,12 @@ public class ConverterTest {
 		}
 
 		assertEquals(expected.getTasks().size(), actual.getTasks().size());
-		
-		TaskDto[] expectedTaskArray = (TaskDto[]) expected.getTasks().toArray();
-		TaskDto[] actualTaskArray = (TaskDto[]) actual.getTasks().toArray();
+
+		TaskDto[] expectedTaskArray = expected.getTasks()
+				.toArray(new TaskDto[expected.getTasks().size()]);
+		TaskDto[] actualTaskArray = actual.getTasks()
+				.toArray(new TaskDto[actual.getTasks().size()]);
+
 		for (int i = 0; i < actualTaskArray.length; i++) {
 			assertEquals(expectedTaskArray[i].getId(),
 					actualTaskArray[i].getId());
