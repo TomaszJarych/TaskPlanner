@@ -1,6 +1,7 @@
 package tj.taskPlanner.Commons.DtoAndEntityConverter;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -8,6 +9,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import tj.taskPlanner.Project.domain.Project;
+import tj.taskPlanner.Project.dto.ProjectDto;
 import tj.taskPlanner.Task.Repository.TaskRepository;
 import tj.taskPlanner.Task.domain.Task;
 import tj.taskPlanner.Task.dto.TaskDto;
@@ -96,6 +99,12 @@ public class DomainConverter {
 		task.setOwner(userRepository.getOne(dto.getOwner().getId()));
 
 		return task;
+	}
+	
+	
+	public ProjectDto toProjectDto(Project project) {
+		
+		return null;
 	}
 
 }
